@@ -13,5 +13,6 @@ class Measure(object):
         self.measure_components = []
         self.footnotes = []
         self.additional_code = None
+        self.order_number = None
         self.measure_type = None
         self.geographical_area_id = None

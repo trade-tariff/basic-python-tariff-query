@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from classes.section import Section
 from classes.chapter import Chapter
 from classes.heading import Heading
+from classes.order_number import OrderNumber
 from classes.ancestor import Ancestor
 from classes.footnote import Footnote
 from classes.measure_type import MeasureType
@@ -27,6 +28,7 @@ class Commodity(object):
         self.measure_types = []
         self.geographical_areas = []
         self.additional_codes = []
+        self.order_numbers = []
         self.measures = []
         self.measure_conditions = []
         self.measure_components = []
@@ -87,25 +89,24 @@ class Commodity(object):
                 self.get_chapter(item)
             elif item["type"] == "heading":
                 self.get_heading(item)
-            elif item["type"] == "ancestor":
+            elif item["type"] == "order_number":
+                self.order_numbers.append(self.get_order_number(item))
+            elif item["type"] == "commodity":
                 self.ancestors.append(self.get_ancestor(item))
             elif item["type"] == "footnote":
                 self.footnotes.append(self.get_footnote(item))
             elif item["type"] == "measure_type":
                 self.measure_types.append(self.get_measure_type(item))
             elif item["type"] == "geographical_area":
-                self.geographical_areas.append(
-                    self.get_geographical_area(item))
+                self.geographical_areas.append(self.get_geographical_area(item))
             elif item["type"] == "additional_code":
                 self.additional_codes.append(self.get_additional_code(item))
             elif item["type"] == "measure":
                 self.measures.append(self.get_measure(item))
             elif item["type"] == "measure_condition":
-                self.measure_conditions.append(
-                    self.get_measure_condition(item))
+                self.measure_conditions.append(self.get_measure_condition(item))
             elif item["type"] == "measure_component":
-                self.measure_components.append(
-                    self.get_measure_component(item))
+                self.measure_components.append(self.get_measure_component(item))
             elif item["type"] == "duty_expression":
                 self.duty_expressions.append(self.get_duty_expression(item))
 
@@ -119,6 +120,10 @@ class Commodity(object):
 
     def get_heading(self, item):
         self.section = Heading(item)
+
+    def get_order_number(self, item):
+        order_number = OrderNumber(item)
+        return order_number
 
     def get_ancestor(self, item):
         ancestor = Ancestor(item)
@@ -162,6 +167,7 @@ class Commodity(object):
             self.get_measure_conditions(measure)
             self.get_measure_components(measure)
             self.get_measure_geographical_area(measure)
+            self.get_measure_order_number(measure)
             self.get_measure_additional_code(measure)
             self.get_measure_measure_type(measure)
             self.get_measure_duty_expression(measure)
@@ -193,6 +199,16 @@ class Commodity(object):
             if geographical_area.geographical_area_id == item["id"]:
                 measure.geographical_area = geographical_area
                 break
+
+    def get_measure_order_number(self, measure):
+        for order_number in self.order_numbers:
+            try:
+                item = measure.relationships["order_number"]["data"]
+                if order_number.quota_order_number_id == item["id"]:
+                    measure.order_number = order_number
+                    break
+            except Exception as e:
+                pass
 
     def get_measure_additional_code(self, measure):
         for additional_code in self.additional_codes:
@@ -257,6 +273,19 @@ class Commodity(object):
                 print("Measure {sid} of type {measure_type_id}, assigned to geo area {geographical_area_id} has a duty of {duty_expression}".format(
                     sid=measure.measure_sid,
                     measure_type_id=measure.measure_type.measure_type_id,
+                    geographical_area_id=measure.geographical_area.geographical_area_id,
+                    duty_expression=measure.duty_expression.duty
+                ))
+
+    def get_quotas(self):
+        print("\nGetting Quotas")
+        print("==============\n")
+        for measure in self.measures:
+            if measure.measure_type.measure_type_id in ["122", "123", "143", "146"]:
+                print("Measure {sid} of type {measure_type_id}, with quota order number {quota_order_number_id}, assigned to geo area {geographical_area_id} has a duty of {duty_expression}".format(
+                    sid=measure.measure_sid,
+                    measure_type_id=measure.measure_type.measure_type_id,
+                    quota_order_number_id=measure.order_number.quota_order_number_id,
                     geographical_area_id=measure.geographical_area.geographical_area_id,
                     duty_expression=measure.duty_expression.duty
                 ))
