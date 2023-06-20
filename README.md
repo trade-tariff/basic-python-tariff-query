@@ -1,7 +1,5 @@
 # Basic Python project to access the Online Trade Tariff API
 
-Used for OTT strategic - UK data
-
 ## Implementation steps
 
 - Create and activate a virtual environment, e.g.
