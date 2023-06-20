@@ -37,3 +37,12 @@ To process a commodity code API with a country restriction:
 
 `python3 process_commodity.py 8716109800 FR`
 
+
+## Examples
+
+|Commodity|Features|
+|-|-|
+|8716109800|Multiple VAT rates|
+|2204101100|Excise rates|
+|0702000007|Quotas|
+
