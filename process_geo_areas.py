@@ -1,0 +1,5 @@
+from classes.geographical_area_collection import GeographicalAreaCollection
+
+
+geographical_area_collection = GeographicalAreaCollection()
+geographical_area_collection.print_members()

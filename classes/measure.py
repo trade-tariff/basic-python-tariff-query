@@ -8,7 +8,7 @@ class Measure(object):
         self.excise = item["attributes"]["excise"]
         self.vat = item["attributes"]["vat"]
         self.relationships = item["relationships"]
-        
+
         self.measure_conditions = []
         self.measure_components = []
         self.footnotes = []
